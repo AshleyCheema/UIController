@@ -9,7 +9,7 @@ public class UIController : MonoBehaviour
     private Button backButton;
 
     [SerializeField]
-    private Button forwardButton;
+    protected Button forwardButton;
 
     [SerializeField]
     private Button returnButton;
