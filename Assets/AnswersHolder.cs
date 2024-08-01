@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
@@ -12,6 +14,12 @@ public class AnswersHolder : MonoBehaviour
 
     [SerializeField]
     private Button submitButton;
+
+    [SerializeField]
+    private string FileName = "Results.txt";
+
+    [SerializeField]
+    private string FileLocation = "";
 
     private int currentQuestion;
 
@@ -47,11 +55,20 @@ public class AnswersHolder : MonoBehaviour
 
     private void CollectAnswers(Answers selectedAnswer)
     {
-        selectedAnswers.Add(selectedAnswer);
+        if (selectedAnswers.Contains(selectedAnswer))
+        {
+            selectedAnswers.RemoveAt(currentQuestion);
+        }
+
+        selectedAnswers.Insert(currentQuestion, selectedAnswer);
     }
 
     private void SubmitAnswers()
     {
+        string path = Path.Combine(FileLocation, FileName);
 
+        string[] data = selectedAnswers.Select(answer => answer.ToString()).ToArray();
+
+        File.WriteAllLines(path, data);
     }
 }
