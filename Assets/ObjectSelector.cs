@@ -22,16 +22,15 @@ public class ObjectSelector : MonoBehaviour
 
     [SerializeField]
     private Button resetCameraButton;
+    public Button ResetCameraButton { get { return resetCameraButton; } set { resetCameraButton = value; } }
 
     private Vector3 cameraDefaultPos;
     private Vector3 cameraDefaultRot;
 
     private bool isObjectSelected = false;
+    public bool IsObjectSelected { get { return isObjectSelected; } set { isObjectSelected = value; } }
 
-    public class SelectableObject
-    {
-        public GameObject selectedObject;
-    }
+    private Animation objectAnim;
 
     private void Start()
     {
@@ -65,6 +64,12 @@ public class ObjectSelector : MonoBehaviour
     {
         isObjectSelected = true;
 
+        if(selectedObject.TryGetComponent(out Animation anim))
+        {
+            objectAnim = anim;
+            objectAnim.Play();
+        }
+
         Vector3 newDistance = Vector3.MoveTowards(selectedObject.transform.position, mainCamera.transform.position, zoomDistance);
 
         mainCamera.transform.DOLookAt(selectedObject.transform.position, zoomSpeed);
@@ -76,6 +81,12 @@ public class ObjectSelector : MonoBehaviour
 
     private void RestCameraPosition()
     {
+        if(objectAnim != null)
+        {
+            objectAnim.Rewind();
+            objectAnim = null; 
+        }
+
         mainCamera.transform.DORotate(cameraDefaultRot, zoomSpeed);
         mainCamera.transform.DOMove(cameraDefaultPos, zoomSpeed);
         resetCameraButton.gameObject.SetActive(false);
